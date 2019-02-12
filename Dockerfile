@@ -1,5 +1,5 @@
-FROM sameersbn/ubuntu:16.04.20190706
-MAINTAINER admin@liquibrium.com
+FROM sameersbn/ubuntu:14.04.20170110
+MAINTAINER sameer@damagehead.com
 
 ENV GITLAB_CI_MULTI_RUNNER_VERSION=1.1.4 \
     GITLAB_CI_MULTI_RUNNER_USER=gitlab_ci_multi_runner \
@@ -7,7 +7,7 @@ ENV GITLAB_CI_MULTI_RUNNER_VERSION=1.1.4 \
 ENV GITLAB_CI_MULTI_RUNNER_DATA_DIR="${GITLAB_CI_MULTI_RUNNER_HOME_DIR}/data"
 
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E6030699E45FA1715D88E1DF1F24 \
- && echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu xenial main" >> /etc/apt/sources.list \
+ && echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main" >> /etc/apt/sources.list \
  && apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
       git-core openssh-client curl libapparmor1 \
