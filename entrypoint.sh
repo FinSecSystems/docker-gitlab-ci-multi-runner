@@ -40,7 +40,7 @@ grant_access_to_docker_socket() {
     DOCKER_SOCKET_GID=$(stat -c %g  /run/docker.sock)
     DOCKER_SOCKET_GROUP=$(stat -c %G /run/docker.sock)
     if [[ ${DOCKER_SOCKET_GROUP} == "UNKNOWN" ]]; then
-      DOCKER_SOCKET_GROUP=docker
+      DOCKER_SOCKET_GROUP=docker_host
       groupadd -g ${DOCKER_SOCKET_GID} ${DOCKER_SOCKET_GROUP}
     fi
     usermod -a -G ${DOCKER_SOCKET_GROUP} ${GITLAB_CI_MULTI_RUNNER_USER}
@@ -49,13 +49,13 @@ grant_access_to_docker_socket() {
 
 configure_ci_runner() {
   if [[ ! -e ${GITLAB_CI_MULTI_RUNNER_DATA_DIR}/config.toml ]]; then
-    if [[ -n ${CI_SERVER_URL} && -n ${RUNNER_TOKEN} && -n ${RUNNER_DESCRIPTION} && -n ${RUNNER_EXECUTOR} ]]; then
+    if [[ -n ${CI_SERVER_URL} && -n ${RUNNER_TOKEN} && -n ${RUNNER_DESCRIPTION} && -n ${RUNNER_EXECUTOR} && -n ${CI_CLONE_URL} ]]; then
       sudo -HEu ${GITLAB_CI_MULTI_RUNNER_USER} \
-        gitlab-ci-multi-runner register --config ${GITLAB_CI_MULTI_RUNNER_DATA_DIR}/config.toml \
-          -n -u "${CI_SERVER_URL}" -r "${RUNNER_TOKEN}" --name "${RUNNER_DESCRIPTION}" --executor "${RUNNER_EXECUTOR}"
-    else
+        gitlab-runner register --config ${GITLAB_CI_MULTI_RUNNER_DATA_DIR}/config.toml \
+          -n -u "${CI_SERVER_URL}" --clone-url "${CI_CLONE_URL}" -r "${RUNNER_TOKEN}" --name "${RUNNER_DESCRIPTION}" --executor "${RUNNER_EXECUTOR}" 
+   else
       sudo -HEu ${GITLAB_CI_MULTI_RUNNER_USER} \
-        gitlab-ci-multi-runner register --config ${GITLAB_CI_MULTI_RUNNER_DATA_DIR}/config.toml
+        gitlab-runner register --config ${GITLAB_CI_MULTI_RUNNER_DATA_DIR}/config.toml
     fi
   fi
 }
@@ -64,7 +64,7 @@ configure_ci_runner() {
 if [[ ${1:0:1} = '-' ]]; then
   EXTRA_ARGS="$@"
   set --
-elif [[ ${1} == gitlab-ci-multi-runner || ${1} == $(which gitlab-ci-multi-runner) ]]; then
+elif [[ ${1} == gitlab-runner || ${1} == $(which gitlab-runner) ]]; then
   EXTRA_ARGS="${@:2}"
   set --
 fi
@@ -79,7 +79,7 @@ if [[ -z ${1} ]]; then
 
   start-stop-daemon --start \
     --chuid ${GITLAB_CI_MULTI_RUNNER_USER}:${GITLAB_CI_MULTI_RUNNER_USER} \
-    --exec $(which gitlab-ci-multi-runner) -- run \
+    --exec /usr/local/bin/gitlab-runner -- --debug run \
       --working-directory ${GITLAB_CI_MULTI_RUNNER_DATA_DIR} \
       --config ${GITLAB_CI_MULTI_RUNNER_DATA_DIR}/config.toml ${EXTRA_ARGS}
 else
