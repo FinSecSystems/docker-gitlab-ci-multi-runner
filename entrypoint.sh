@@ -52,7 +52,7 @@ configure_ci_runner() {
     if [[ -n ${CI_SERVER_URL} && -n ${RUNNER_TOKEN} && -n ${RUNNER_DESCRIPTION} && -n ${RUNNER_EXECUTOR} && -n ${CI_CLONE_URL} && -n ${RUNNER_NETWORK} ]]; then
       sudo -HEu ${GITLAB_CI_MULTI_RUNNER_USER} \
         gitlab-runner register --config ${GITLAB_CI_MULTI_RUNNER_DATA_DIR}/config.toml \
-          -n -u "${CI_SERVER_URL}" --clone-url "${CI_CLONE_URL}" -r "${RUNNER_TOKEN}" --name "${RUNNER_DESCRIPTION}" --executor "${RUNNER_EXECUTOR}" --docker-image "docker:stable" --docker-volumes /var/run/docker.sock:/var/run/docker.sock --docker-volumes ${GITLAB_CI_MULTI_RUNNER_HOME_DIR}/.ssh:/root/.ssh --docker-network-mode "${RUNNER_NETWORK}"
+	-n -u "${CI_SERVER_URL}" --clone-url "${CI_CLONE_URL}" -r "${RUNNER_TOKEN}" --name "${RUNNER_DESCRIPTION}" --executor "${RUNNER_EXECUTOR}" --docker-image "docker:stable" --docker-volumes /var/run/docker.sock:/var/run/docker.sock --docker-volumes ${RUNNER_BUILD_DIR}/.ssh:/root/.ssh --docker-volumes ${RUNNER_BUILD_DIR}/builds:/builds --docker-network-mode "${RUNNER_NETWORK}" --env RUNNER_BUILD_DIR=${RUNNER_BUILD_DIR}
       echo "Running on ${RUNNER_NETWORK}..."
     else
       sudo -HEu ${GITLAB_CI_MULTI_RUNNER_USER} \
