@@ -52,7 +52,7 @@ configure_ci_runner() {
     if [[ -n ${CI_SERVER_URL} && -n ${RUNNER_TOKEN} && -n ${RUNNER_DESCRIPTION} && -n ${RUNNER_EXECUTOR} && -n ${CI_CLONE_URL} && -n ${RUNNER_NETWORK} ]]; then
       sudo -HEu ${GITLAB_CI_MULTI_RUNNER_USER} \
         gitlab-runner register --config ${GITLAB_CI_MULTI_RUNNER_DATA_DIR}/config.toml \
-	-n -u "${CI_SERVER_URL}" --clone-url "${CI_CLONE_URL}" -r "${RUNNER_TOKEN}" --name "${RUNNER_DESCRIPTION}" --executor "${RUNNER_EXECUTOR}" --docker-image "docker:stable" --docker-volumes /var/run/docker.sock:/var/run/docker.sock --docker-volumes ${RUNNER_BUILD_DIR}/.ssh:/root/.ssh --docker-volumes ${RUNNER_BUILD_DIR}/builds:/builds --docker-network-mode "${RUNNER_NETWORK}" --env RUNNER_BUILD_DIR=${RUNNER_BUILD_DIR} --env "CONAN_DOCKER_RUN_OPTIONS=-v ${RUNNER_BUILD_DIR}\$CI_PROJECT_DIR:/home/conan/project -v ${RUNNER_BUILD_DIR}/.ssh:/home/conan/.ssh -v ${RUNNER_BUILD_DIR}/tmp:/tmp" --env "CONAN_DOCKER_HOME=/home"
+	-n -u "${CI_SERVER_URL}" --clone-url "${CI_CLONE_URL}" -r "${RUNNER_TOKEN}" --name "${RUNNER_DESCRIPTION}" --executor "${RUNNER_EXECUTOR}" --docker-image "docker:stable" --docker-volumes /var/run/docker.sock:/var/run/docker.sock --docker-volumes ${RUNNER_BUILD_DIR}/.ssh:/root/.ssh --docker-volumes ${RUNNER_BUILD_DIR}/builds:/builds --docker-network-mode "${RUNNER_NETWORK}" --env RUNNER_BUILD_DIR=${RUNNER_BUILD_DIR} --env "CONAN_DOCKER_RUN_OPTIONS=-v ${RUNNER_BUILD_DIR}\$CI_PROJECT_DIR:/home/conan/project -v ${RUNNER_BUILD_DIR}/.ssh:/home/conan/.ssh -v ${RUNNER_BUILD_DIR}/tmp:/tmp" --env "CONAN_DOCKER_HOME=/home" --output-limit "20480"
       echo "Running on ${RUNNER_NETWORK}..."
     else
       sudo -HEu ${GITLAB_CI_MULTI_RUNNER_USER} \
