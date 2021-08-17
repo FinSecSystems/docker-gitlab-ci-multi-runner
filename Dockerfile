@@ -1,5 +1,5 @@
 FROM sameersbn/ubuntu:14.04.20170110
-MAINTAINER admin@liquibrium.com
+MAINTAINER admin@finsec.systems
 
 ENV GITLAB_CI_MULTI_RUNNER_VERSION=latest \
     GITLAB_CI_MULTI_RUNNER_USER=gitlab_ci_multi_runner \
