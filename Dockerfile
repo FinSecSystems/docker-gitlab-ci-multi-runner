@@ -1,4 +1,4 @@
-FROM sameersbn/ubuntu:14.04.20170110
+FROM sameersbn/ubuntu:latest
 MAINTAINER admin@finsec.systems
 
 ENV GITLAB_CI_MULTI_RUNNER_VERSION=latest \
@@ -7,6 +7,7 @@ ENV GITLAB_CI_MULTI_RUNNER_VERSION=latest \
 ENV GITLAB_CI_MULTI_RUNNER_DATA_DIR="${GITLAB_CI_MULTI_RUNNER_HOME_DIR}/data"
 
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E6030699E45FA1715D88E1DF1F24 \
+ && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E363C90F8F1B6217 \ 
  && echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main" >> /etc/apt/sources.list \
  && apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
